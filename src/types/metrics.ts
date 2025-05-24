@@ -1,5 +1,5 @@
 export type Metrics = {
   totalFaces: number;
-  facesPerHour: number;
-  facesPerMinute: number;
+  facesInLastHour: number;
+  facesInLastMinute: number;
 };

@@ -2,9 +2,7 @@ import useSWR from "swr";
 import {
   query,
   count,
-  limit,
-  orderBy,
-  getDocs,
+  where,
   getAggregateFromServer,
 } from "firebase/firestore";
 
@@ -16,45 +14,30 @@ export const useDetectionMetrics = () => {
 };
 
 export async function fetchDetectionMetrics(): Promise<Metrics> {
-  const totalSnapshot = await getAggregateFromServer(collection, {
-    totalFaces: count(),
-  });
+  const currentDate = new Date();
 
-  const totalFaces = totalSnapshot.data().totalFaces;
-  if (totalFaces === 0) {
-    return {
-      totalFaces: 0,
-      facesPerHour: 0,
-      facesPerMinute: 0,
-    };
-  }
-
-  const earliestQuery = query(
+  const currentMinute = currentDate.setSeconds(0, 0);
+  const minuteQuery = query(
     collection,
-    orderBy("timestamp", "asc"),
-    limit(1),
+    where("timestamp", ">=", currentMinute),
   );
 
-  const earliestSnapshot = await getDocs(earliestQuery);
-  if (earliestSnapshot.empty) {
-    return {
-      totalFaces,
-      facesPerHour: 0,
-      facesPerMinute: 0,
-    };
-  }
+  const currentHour = currentDate.setMinutes(0, 0, 0);
+  const hourQuery = query(collection, where("timestamp", ">=", currentHour));
 
-  const earliestDoc = earliestSnapshot.docs[0];
-  const earliestTimestamp = earliestDoc.data().timestamp;
+  const [totalSnapshot, hourSnapshot, minuteSnapshot] = await Promise.all([
+    getAggregateFromServer(collection, { totalFaces: count() }),
+    getAggregateFromServer(hourQuery, { facesInLastHour: count() }),
+    getAggregateFromServer(minuteQuery, { facesInLastMinute: count() }),
+  ]);
 
-  const elapsedMs = Date.now() - earliestTimestamp;
-  const elapsedHours = elapsedMs / (1000 * 60 * 60);
-  const elapsedMinutes = elapsedMs / (1000 * 60);
+  const totalFaces = totalSnapshot.data().totalFaces;
+  const facesInLastHour = hourSnapshot.data().facesInLastHour;
+  const facesInLastMinute = minuteSnapshot.data().facesInLastMinute;
 
   return {
     totalFaces,
-    facesPerHour: elapsedHours > 0 ? totalFaces / elapsedHours : totalFaces,
-    facesPerMinute:
-      elapsedMinutes > 0 ? totalFaces / elapsedMinutes : totalFaces,
+    facesInLastHour,
+    facesInLastMinute,
   };
 }

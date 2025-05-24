@@ -33,15 +33,17 @@ export const MetricsRow = () => {
       />
 
       <MetricsCard
-        title="Faces p/ hora"
+        title="Total - Ultima hora"
         icon={<Clock className="h-6 w-6 text-blue-400 mr-2" />}
-        value={isLoading ? skeleton : Math.floor(metrics?.facesPerHour || 0)}
+        value={isLoading ? skeleton : Math.floor(metrics?.facesInLastHour || 0)}
       />
 
       <MetricsCard
-        title="Faces p/ minuto"
+        title="Total - Ultimo minuto"
         icon={<AlarmCheck className="h-6 w-6 text-blue-400 mr-2" />}
-        value={isLoading ? skeleton : Math.floor(metrics?.facesPerMinute || 0)}
+        value={
+          isLoading ? skeleton : Math.floor(metrics?.facesInLastMinute || 0)
+        }
       />
     </div>
   );

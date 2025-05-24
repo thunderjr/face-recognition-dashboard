@@ -1,8 +1,8 @@
 import * as faceapi from "face-api.js";
 
+import type { RawDetectionResult, RawDetectionWithTimestamp } from "./types";
 import { translateExpression, translateGender } from "../translation";
 import { getHighestExpression } from "./expression";
-import type { RawDetectionResult } from "./types";
 
 type Props = {
   videoRef: React.RefObject<HTMLVideoElement | null>;
@@ -13,15 +13,17 @@ const options = new faceapi.SsdMobilenetv1Options({
   minConfidence: 0.3,
 });
 
-export async function handleFaceDetections({
+export async function getAndDrawFaceDetections({
   overlayRef,
   videoRef,
-}: Props): Promise<RawDetectionResult[] | undefined> {
+}: Props): Promise<RawDetectionWithTimestamp[] | undefined> {
   if (videoRef.current && overlayRef.current) {
     const result = await faceapi
       .detectAllFaces(videoRef.current, options)
       .withFaceExpressions()
       .withAgeAndGender();
+
+    const timestamp = Date.now();
 
     if (result && result.length > 0) {
       const dims = faceapi.matchDimensions(
@@ -37,7 +39,7 @@ export async function handleFaceDetections({
         resizedResults.map(drawDetectionLabel(overlayRef.current)),
       );
 
-      return result;
+      return result.map(includeTimestamp(timestamp));
     }
 
     clearCanvas(overlayRef.current);
@@ -78,4 +80,13 @@ function clearCanvas(canvas: HTMLCanvasElement): void {
   if (context) {
     context.clearRect(0, 0, canvas.width, canvas.height);
   }
+}
+
+function includeTimestamp(
+  timestamp: number,
+): (raw: RawDetectionResult) => RawDetectionResult & { timestamp: number } {
+  return (raw) => ({
+    ...raw,
+    timestamp,
+  });
 }

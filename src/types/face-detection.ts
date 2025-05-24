@@ -10,8 +10,9 @@ export type Expression =
 export type Gender = "male" | "female";
 
 export type DetectionLog = {
-  timestamp: string;
-  distance: number;
+  id?: string;
+  timestamp: number;
+  distance_in_meters: number;
   age: number;
   gender: Gender;
   expression: Expression;

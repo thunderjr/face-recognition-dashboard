@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 
 import { DataTable } from "./composites/data-table";
-import type { FaceDetectionData } from "@/types";
+import type { DetectionLog, Expression } from "@/types";
 
-const detections: FaceDetectionData[] = [
+const detections: DetectionLog[] = [
   {
     timestamp: "2025-05-23T14:32:15Z",
     distance: 2.3,
@@ -67,7 +67,9 @@ const formatTimestamp = (timestamp: string) => {
   return date.toLocaleTimeString();
 };
 
-const expressions: Record<string, string> = {
+const expressions: Record<Expression, string> = {
+  disgusted: "Revoltado",
+  fearful: "Medroso",
   happy: "Feliz",
   sad: "Triste",
   neutral: "Neutro",
@@ -76,8 +78,8 @@ const expressions: Record<string, string> = {
 };
 
 const formatDetectionData = (
-  data: FaceDetectionData,
-): Record<keyof FaceDetectionData, ReactNode> => {
+  data: DetectionLog,
+): Record<keyof DetectionLog, ReactNode> => {
   return {
     age: data.age,
     distance: data.distance.toFixed(1),

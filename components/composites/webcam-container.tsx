@@ -8,9 +8,10 @@ import { Button } from "../ui/button";
 
 type Props = {
   videoRef: React.RefObject<HTMLVideoElement | null>;
+  overlayRef?: React.RefObject<HTMLCanvasElement | null>;
 };
 
-export const WebcamContainer = ({ videoRef }: Props) => {
+export const WebcamContainer = ({ videoRef, overlayRef }: Props) => {
   const [cameraActive, setCameraActive] = useState(false);
 
   useEffect(() => {
@@ -46,7 +47,7 @@ export const WebcamContainer = ({ videoRef }: Props) => {
   }, [cameraActive]);
 
   return (
-    <div className="w-full lg:w-[30%]">
+    <div className="w-full lg:w-[40%]">
       <Card className="bg-slate-800 border-slate-700">
         <CardHeader>
           <CardTitle className="flex justify-between items-center">
@@ -63,13 +64,19 @@ export const WebcamContainer = ({ videoRef }: Props) => {
         <CardContent>
           <div className="aspect-video bg-slate-700 rounded-lg flex items-center justify-center overflow-hidden">
             {cameraActive ? (
-              <video
-                muted
-                autoPlay
-                playsInline
-                ref={videoRef}
-                className="w-full h-full object-cover"
-              />
+              <div className="relative">
+                <video
+                  muted
+                  autoPlay
+                  playsInline
+                  ref={videoRef}
+                  className="w-full h-full object-cover"
+                />
+                <canvas
+                  ref={overlayRef}
+                  className="absolute top-0 left-0 w-full h-full"
+                />
+              </div>
             ) : (
               <CameraIcon className="h-12 w-12 text-slate-500" />
             )}

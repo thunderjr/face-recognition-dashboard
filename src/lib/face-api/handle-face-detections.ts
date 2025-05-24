@@ -1,7 +1,7 @@
 import * as faceapi from "face-api.js";
 
 import { translateExpression, translateGender } from "../translation";
-import { getHighestExpression } from "@/lib/face-api/expression";
+import { getHighestExpression } from "./expression";
 import type { RawDetectionResult } from "./types";
 
 type Props = {

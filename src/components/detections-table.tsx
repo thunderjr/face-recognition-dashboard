@@ -1,99 +1,52 @@
+"use client";
 import type { ReactNode } from "react";
 
 import { translateExpression, translateGender } from "@/lib/translation";
+import { useDetectionLogs } from "@/hooks/use-detection-logs";
 import { DataTable } from "./composites/data-table";
 import type { DetectionLog } from "@/types";
-
-const detections: DetectionLog[] = [
-  {
-    timestamp: "2025-05-23T14:32:15Z",
-    distance: 2.3,
-    age: 28,
-    gender: "male",
-    expression: "surprised",
-  },
-  {
-    timestamp: "2025-05-23T14:31:42Z",
-    distance: 1.8,
-    age: 34,
-    gender: "female",
-    expression: "happy",
-  },
-  {
-    timestamp: "2025-05-23T14:30:18Z",
-    distance: 3.1,
-    age: 42,
-    gender: "male",
-    expression: "neutral",
-  },
-  {
-    timestamp: "2025-05-23T14:29:55Z",
-    distance: 2.5,
-    age: 19,
-    gender: "female",
-    expression: "neutral",
-  },
-  {
-    timestamp: "2025-05-23T14:28:30Z",
-    distance: 1.5,
-    age: 31,
-    gender: "male",
-    expression: "happy",
-  },
-  {
-    timestamp: "2025-05-23T14:27:12Z",
-    distance: 2.8,
-    age: 25,
-    gender: "female",
-    expression: "surprised",
-  },
-  {
-    timestamp: "2025-05-23T14:26:45Z",
-    distance: 3.2,
-    age: 50,
-    gender: "male",
-    expression: "sad",
-  },
-  {
-    timestamp: "2025-05-23T14:25:20Z",
-    distance: 2.0,
-    age: 37,
-    gender: "female",
-    expression: "happy",
-  },
-];
-
-const formatTimestamp = (timestamp: string) => {
-  const date = new Date(timestamp);
-  return date.toLocaleTimeString();
-};
+import { Card } from "./ui/card";
 
 const formatDetectionData = (
   data: DetectionLog,
-): Record<keyof DetectionLog, ReactNode> => {
+): Record<keyof Omit<DetectionLog, "id">, ReactNode> => {
   return {
     age: data.age,
-    distance: data.distance.toFixed(1),
     gender: translateGender(data.gender),
-    timestamp: formatTimestamp(data.timestamp),
     expression: translateExpression(data.expression),
+    distance_in_meters: data.distance_in_meters.toFixed(1),
+    timestamp: new Date(data.timestamp).toLocaleTimeString(),
   };
 };
 
 export const FaceDetectionsTable = () => {
+  const { data: logs, error } = useDetectionLogs();
+
   const detectionsColumns = {
     timestamp: "Horário",
-    distance: "Distância (m)",
-    age: "Idade Est.",
+    distance_in_meters: "Distância (m)",
+    age: "Idade",
     gender: "Gênero",
     expression: "Expressão detectada",
   };
+
+  if (error) {
+    return (
+      <div className="flex-1">
+        <Card className="bg-slate-800 border-slate-700 max-h-full p-12 grid place-items-center">
+          <div>Erro ao carregar detecções:</div>
+          <pre>{error}</pre>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <DataTable
       title="Últimas Detecções"
       columns={detectionsColumns}
-      data={detections.map(formatDetectionData)}
+      isLoading={logs?.length === 0}
+      data={(logs || []).map(formatDetectionData)}
     />
   );
 };

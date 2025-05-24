@@ -1,4 +1,5 @@
 "use client";
+
 import type { ReactNode } from "react";
 
 import { translateExpression, translateGender } from "@/lib/translation";
@@ -45,7 +46,7 @@ export const FaceDetectionsTable = () => {
     <DataTable
       title="Últimas Detecções"
       columns={detectionsColumns}
-      isLoading={logs?.length === 0}
+      isLoading={!logs || logs?.length === 0}
       data={(logs || []).map(formatDetectionData)}
     />
   );

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 import {
@@ -9,18 +9,45 @@ import {
   TableCell,
   TableHeader,
 } from "../ui/table";
+import { Skeleton } from "../ui/skeleton";
 
 type Props<T extends Record<string, ReactNode>> = {
   columns: Record<keyof T, string>;
+  isLoading?: boolean;
   title: string;
   data: T[];
 };
 
 export const DataTable = <T extends Record<string, ReactNode>>({
+  isLoading,
   columns,
   title,
   data,
 }: Props<T>) => {
+  const content = useMemo(() => {
+    if (isLoading) {
+      return Array.from({ length: 3 }).map((_, index) => (
+        <TableRow key={`row-${title}-${index}`} className="border-slate-700">
+          {Object.entries<string>(columns).map(([key]) => (
+            <TableCell key={`cell-${title}-${key}-${index}`}>
+              <Skeleton className="h-4 w-24 bg-white/5" />
+            </TableCell>
+          ))}
+        </TableRow>
+      ));
+    }
+
+    return data.map((row, index) => (
+      <TableRow key={`row-${title}-${index}`} className="border-slate-700">
+        {Object.entries<string>(columns).map(([key]) => (
+          <TableCell key={`cell-${title}-${index}-${key}`}>
+            {row[key as keyof T]}
+          </TableCell>
+        ))}
+      </TableRow>
+    ));
+  }, [columns, data, isLoading, title]);
+
   return (
     <div className="flex-1">
       <Card className="bg-slate-800 border-slate-700 max-h-full">
@@ -40,20 +67,7 @@ export const DataTable = <T extends Record<string, ReactNode>>({
                 </TableRow>
               </TableHeader>
 
-              <TableBody>
-                {data.map((row, index) => (
-                  <TableRow
-                    key={`row-${title}-${index}`}
-                    className="border-slate-700"
-                  >
-                    {Object.entries<string>(columns).map(([key]) => (
-                      <TableCell key={`cell-${title}-${index}-${key}`}>
-                        {row[key as keyof T]}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
+              <TableBody>{content}</TableBody>
             </Table>
           </div>
         </CardContent>

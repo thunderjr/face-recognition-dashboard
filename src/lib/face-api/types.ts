@@ -9,3 +9,7 @@ export type RawDetectionResult = {
   gender: Gender;
   age: number;
 };
+
+export type RawDetectionWithTimestamp = RawDetectionResult & {
+  timestamp: number;
+};

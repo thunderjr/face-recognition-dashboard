@@ -2,9 +2,14 @@
 
 import { useEffect, useRef } from "react";
 
-import { handleFaceDetections } from "@/lib/face-api/handle-face-detections";
+import type { RawDetectionWithTimestamp } from "@/lib/face-api/types";
 import { WebcamContainer } from "./composites/webcam-container";
-import { loadModels } from "@/lib/face-api/load-models";
+import { addLogsBatch } from "@/lib/firebase/batch-write";
+import {
+  loadModels,
+  parseDetectionLog,
+  getAndDrawFaceDetections,
+} from "@/lib/face-api";
 
 export const FaceRecognitionContainer = () => {
   const overlayRef = useRef<HTMLCanvasElement>(null);
@@ -15,9 +20,18 @@ export const FaceRecognitionContainer = () => {
   }, []);
 
   useEffect(() => {
+    async function saveDetections(
+      detections: RawDetectionWithTimestamp[] | undefined,
+    ) {
+      if (!detections || detections.length === 0) return;
+      await addLogsBatch(detections.map(parseDetectionLog));
+      console.log(`${detections.length} detections saved`);
+    }
+
     const intervalId = setInterval(
-      () => handleFaceDetections({ videoRef, overlayRef }),
-      500,
+      () =>
+        getAndDrawFaceDetections({ videoRef, overlayRef }).then(saveDetections),
+      1000,
     );
 
     return () => clearInterval(intervalId);

@@ -21,8 +21,8 @@ export const MetricsRow = () => {
   if (error) {
     return (
       <MetricsCard
-        title="Erro ao carregar métricas"
         value={error}
+        title="Erro ao carregar métricas"
         icon={<CircleX className="h-6 w-6 text-blue-400 mr-2" />}
       />
     );

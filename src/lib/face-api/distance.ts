@@ -13,8 +13,11 @@ export function includeDistance(config: AppConfig) {
   ): Promise<RawDetectionWithTimestampAndDistance> => {
     const faceWidthPixels = detection.detection.box.width;
 
-    const distance = config.calibrationConstant
-      ? calculateFaceDistance(faceWidthPixels, config.calibrationConstant)
+    const distance = config.distanceCalibrationConstant
+      ? calculateFaceDistance(
+          faceWidthPixels,
+          config.distanceCalibrationConstant,
+        )
       : null;
 
     return {
@@ -27,15 +30,17 @@ export function includeDistance(config: AppConfig) {
 /**
  * Calculate face distance in meters
  * @param {number} faceWidthPixels - Width of detected face in pixels
- * @param {number} calibrationConstant - Calibration value
+ * @param {number} distanceCalibrationConstant - Calibration value
  * @returns {number | null} Distance in meters
  */
 function calculateFaceDistance(
   faceWidthPixels: number,
-  calibrationConstant: number,
+  distanceCalibrationConstant: number,
 ): number | null {
   if (faceWidthPixels <= 0) return null;
-  return Math.round((calibrationConstant / faceWidthPixels) * 100) / 100;
+  return (
+    Math.round((distanceCalibrationConstant / faceWidthPixels) * 100) / 100
+  );
 }
 
 /**
@@ -44,7 +49,7 @@ function calculateFaceDistance(
  * @param {number} measuredFaceWidthPixels - Face width in pixels at that distance
  * @returns {number} Calibration constant
  */
-export function getCalibrationConstant(
+export function getDistanceCalibrationConstant(
   knownDistanceMeters: number,
   measuredFaceWidthPixels: number,
 ): number {

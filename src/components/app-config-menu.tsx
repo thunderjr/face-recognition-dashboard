@@ -3,7 +3,7 @@
 import { Settings, RotateCcw, Ruler } from "lucide-react";
 import { useState } from "react";
 
-import { getCalibrationConstant } from "@/lib/face-api/distance";
+import { getDistanceCalibrationConstant } from "@/lib/face-api/distance";
 import { useAppConfig } from "../context/app-config-context";
 import { Button } from "./ui/button";
 import { Slider } from "./ui/slider";
@@ -21,13 +21,13 @@ export const AppConfigMenu = () => {
   const {
     config,
     resetConfig,
-    setCalibrating,
+    setCalibratingDistance,
     setModelMinConfidence,
     setSimilarityThreshold,
-    setCalibrationConstant,
+    setDistanceCalibrationConstant,
   } = useAppConfig();
 
-  const [knownDistance, setKnownDistance] = useState<string>("");
+  const [knownDistance, setKnownDistance] = useState<number>(0);
 
   return (
     <DropdownMenu>
@@ -92,7 +92,7 @@ export const AppConfigMenu = () => {
               Calibragem de Distância
             </Label>
 
-            {!config.calibrating ? (
+            {!config.calibratingDistance ? (
               <div className="space-y-2">
                 <div className="text-xs text-muted-foreground">
                   Para calibrar a medição de distância, posicione-se a uma
@@ -105,15 +105,17 @@ export const AppConfigMenu = () => {
                     step="0.1"
                     type="number"
                     className="flex-1"
-                    value={knownDistance}
+                    value={knownDistance || ""}
                     placeholder="Distância em metros"
-                    onChange={(e) => setKnownDistance(e.target.value)}
+                    onChange={(e) =>
+                      setKnownDistance(parseFloat(e.target.value) || 0)
+                    }
                   />
 
                   <Button
                     size="sm"
-                    onClick={() => setCalibrating(true)}
-                    disabled={!knownDistance || parseFloat(knownDistance) <= 0}
+                    onClick={() => setCalibratingDistance(true)}
+                    disabled={!knownDistance || knownDistance <= 0}
                   >
                     <Ruler className="h-4 w-4 mr-1" />
                     Calibrar
@@ -130,7 +132,9 @@ export const AppConfigMenu = () => {
                 <div className="flex gap-2">
                   <div className="text-xs text-muted-foreground flex-1">
                     Largura do rosto:{" "}
-                    {config.currentFaceWidth?.toFixed(1) || "Detectando..."} px
+                    {config.currentFaceWidth
+                      ? `${config.currentFaceWidth?.toFixed(1)} px`
+                      : "Detectando..."}
                   </div>
 
                   <Button
@@ -138,13 +142,14 @@ export const AppConfigMenu = () => {
                     variant="outline"
                     onClick={() => {
                       if (config.currentFaceWidth && knownDistance) {
-                        const constant = getCalibrationConstant(
-                          parseFloat(knownDistance),
+                        const constant = getDistanceCalibrationConstant(
+                          knownDistance,
                           config.currentFaceWidth,
                         );
-                        setCalibrationConstant(constant);
-                        setCalibrating(false);
-                        setKnownDistance("");
+
+                        setDistanceCalibrationConstant(constant);
+                        setCalibratingDistance(false);
+                        setKnownDistance(0);
                       }
                     }}
                     disabled={!config.currentFaceWidth}
@@ -156,8 +161,8 @@ export const AppConfigMenu = () => {
                     size="sm"
                     variant="ghost"
                     onClick={() => {
-                      setCalibrating(false);
-                      setKnownDistance("");
+                      setCalibratingDistance(false);
+                      setKnownDistance(0);
                     }}
                   >
                     Cancelar
@@ -166,9 +171,10 @@ export const AppConfigMenu = () => {
               </div>
             )}
 
-            {config.calibrationConstant && (
+            {config.distanceCalibrationConstant && (
               <div className="text-xs text-muted-foreground">
-                Constante de calibragem: {config.calibrationConstant.toFixed(2)}
+                Constante de calibragem:{" "}
+                {config.distanceCalibrationConstant.toFixed(2)}
               </div>
             )}
           </div>

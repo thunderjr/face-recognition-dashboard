@@ -14,9 +14,9 @@ const DEFAULT_CONFIG: AppConfig = {
   similarityThreshold: 0.11,
   modelMinConfidence: 0.3,
 
-  calibrating: false,
   currentFaceWidth: null,
-  calibrationConstant: 65,
+  calibratingDistance: false,
+  distanceCalibrationConstant: 65,
 };
 
 const LOCAL_STORAGE_KEY = "face-recognition-app-config";
@@ -27,9 +27,9 @@ interface AppConfigContextType {
   setModelMinConfidence: (value: number) => void;
   setSimilarityThreshold: (value: number) => void;
 
-  setCalibrating: (value: boolean) => void;
-  setCalibrationConstant: (value: number) => void;
+  setCalibratingDistance: (value: boolean) => void;
   setCurrentFaceWidth: (value: number | null) => void;
+  setDistanceCalibrationConstant: (value: number) => void;
 }
 
 const AppConfigContext = createContext<AppConfigContextType | undefined>(
@@ -56,14 +56,14 @@ export const AppConfigProvider = ({ children }: PropsWithChildren) => {
   const setSimilarityThreshold = (value: number) =>
     setConfig((prev) => ({ ...prev, similarityThreshold: value }));
 
-  const setCalibrating = (value: boolean) =>
-    setConfig((prev) => ({ ...prev, calibrating: value }));
-
   const setCurrentFaceWidth = (value: number | null) =>
     setConfig((prev) => ({ ...prev, currentFaceWidth: value }));
 
-  const setCalibrationConstant = (value: number) =>
-    setConfig((prev) => ({ ...prev, calibrationConstant: value }));
+  const setDistanceCalibrationConstant = (value: number) =>
+    setConfig((prev) => ({ ...prev, distanceCalibrationConstant: value }));
+
+  const setCalibratingDistance = (value: boolean) =>
+    setConfig((prev) => ({ ...prev, calibratingDistance: value }));
 
   return (
     <AppConfigContext.Provider
@@ -73,9 +73,9 @@ export const AppConfigProvider = ({ children }: PropsWithChildren) => {
         setModelMinConfidence,
         setSimilarityThreshold,
 
-        setCalibrating,
         setCurrentFaceWidth,
-        setCalibrationConstant,
+        setCalibratingDistance,
+        setDistanceCalibrationConstant,
       }}
     >
       {children}

@@ -2,7 +2,7 @@ export interface AppConfig {
   modelMinConfidence: number;
   similarityThreshold: number;
 
-  calibrating: boolean;
-  calibrationConstant: number;
+  calibratingDistance: boolean;
   currentFaceWidth: number | null;
+  distanceCalibrationConstant: number;
 }

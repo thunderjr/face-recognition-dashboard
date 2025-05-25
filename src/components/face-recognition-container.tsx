@@ -20,13 +20,13 @@ export const FaceRecognitionContainer = () => {
 
   const handleDistanceCalibration = useCallback(
     (data: Awaited<ReturnType<typeof handleFaceDetections>>) => {
-      if (config.calibrating && data && data.length > 0) {
+      if (config.calibratingDistance && data && data.length > 0) {
         const width = data[0].detection.box.width;
         setCurrentFaceWidth(width);
       }
       return data;
     },
-    [config.calibrating, setCurrentFaceWidth],
+    [config.calibratingDistance, setCurrentFaceWidth],
   );
 
   useEffect(() => {

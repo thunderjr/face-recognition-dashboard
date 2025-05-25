@@ -27,11 +27,15 @@ export async function handleFaceDetections(
       .withAgeAndGender();
 
     const timestamp = Date.now();
-    await drawDetections(params, result);
 
     const resultWithTimestamp = result.map(includeTimestamp(timestamp));
+    const resultWithTimestampAndDistance = await Promise.all(
+      resultWithTimestamp.map(includeDistance(params.config)),
+    );
 
-    return Promise.all(resultWithTimestamp.map(includeDistance));
+    await drawDetections(params, resultWithTimestampAndDistance);
+
+    return resultWithTimestampAndDistance;
   }
 }
 

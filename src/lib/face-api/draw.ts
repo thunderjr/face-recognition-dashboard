@@ -1,13 +1,17 @@
 import * as faceapi from "face-api.js";
 
-import type { FaceDetectionParams, RawDetectionResult } from "./types";
+import type {
+  FaceDetectionParams,
+  RawDetectionWithTimestampAndDistance,
+} from "./types";
+
 import { translateGender, translateExpression } from "../translation";
 import { findSimilarFaceEmbedding } from "@/lib/libsql";
 import { getHighestExpression } from "./expression";
 
 export async function drawDetections(
   { overlayRef, videoRef, config }: FaceDetectionParams,
-  result: RawDetectionResult[],
+  result: RawDetectionWithTimestampAndDistance[],
 ) {
   if (videoRef.current && overlayRef.current) {
     if (!result || result?.length === 0) return clearCanvas(overlayRef.current);
@@ -34,19 +38,20 @@ export async function drawDetections(
  * The returned function returns a Promise to use with Promise.allSettled() and draw all the detection labels at once.
  * @param {HTMLCanvasElement} canvas - The camera overlay canvas.
  * @param {number} similarityThreshold - The threshold to consider a face similar to an existing one in the database. Comes from AppConfig.
- * @returns {(data: RawDetectionResult) => Promise<void>} High order function that will draw the detection label on the canvas
+ * @returns {(data: RawDetectionWithTimestampAndDistance) => Promise<void>} High order function that will draw the detection label on the canvas
  */
 function drawDetectionLabel(
   canvas: HTMLCanvasElement,
   similarityThreshold: number,
-): (data: RawDetectionResult) => Promise<void> {
-  return async (data: RawDetectionResult) => {
+): (data: RawDetectionWithTimestampAndDistance) => Promise<void> {
+  return async (data: RawDetectionWithTimestampAndDistance) => {
     const { expression, probability: expressionProbability } =
       getHighestExpression(data.expressions);
 
     const { age, gender, genderProbability } = data;
     const texts = [
       `${faceapi.utils.round(age, 0)} anos`,
+      `${data.distance_in_meters ? `Distância ${data.distance_in_meters} m` : "Distância desconhecida"}`,
       `${translateGender(gender)} (${faceapi.utils.round(genderProbability * 100)}%)`,
       `${translateExpression(expression)} (${faceapi.utils.round(expressionProbability * 100)}%)`,
     ];

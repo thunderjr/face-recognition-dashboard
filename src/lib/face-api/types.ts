@@ -1,7 +1,8 @@
-import { Expression, Gender } from "@/types";
+import type { AppConfig, Expression, Gender } from "@/types";
 import * as faceapi from "face-api.js";
 
-export type FaceDetectionProps = {
+export type FaceDetectionParams = {
+  config: AppConfig;
   videoRef: React.RefObject<HTMLVideoElement | null>;
   overlayRef: React.RefObject<HTMLCanvasElement | null>;
 };
@@ -18,4 +19,8 @@ export type RawDetectionResult = {
 
 export type RawDetectionWithTimestamp = RawDetectionResult & {
   timestamp: number;
+};
+
+export type RawDetectionWithTimestampAndDistance = RawDetectionWithTimestamp & {
+  distance_in_meters: number | null;
 };

@@ -13,6 +13,10 @@ import type { AppConfig } from "../types";
 const DEFAULT_CONFIG: AppConfig = {
   similarityThreshold: 0.11,
   modelMinConfidence: 0.3,
+
+  calibrating: false,
+  currentFaceWidth: null,
+  calibrationConstant: 65,
 };
 
 const LOCAL_STORAGE_KEY = "face-recognition-app-config";
@@ -22,6 +26,10 @@ interface AppConfigContextType {
   resetConfig: () => void;
   setModelMinConfidence: (value: number) => void;
   setSimilarityThreshold: (value: number) => void;
+
+  setCalibrating: (value: boolean) => void;
+  setCalibrationConstant: (value: number) => void;
+  setCurrentFaceWidth: (value: number | null) => void;
 }
 
 const AppConfigContext = createContext<AppConfigContextType | undefined>(
@@ -48,6 +56,15 @@ export const AppConfigProvider = ({ children }: PropsWithChildren) => {
   const setSimilarityThreshold = (value: number) =>
     setConfig((prev) => ({ ...prev, similarityThreshold: value }));
 
+  const setCalibrating = (value: boolean) =>
+    setConfig((prev) => ({ ...prev, calibrating: value }));
+
+  const setCurrentFaceWidth = (value: number | null) =>
+    setConfig((prev) => ({ ...prev, currentFaceWidth: value }));
+
+  const setCalibrationConstant = (value: number) =>
+    setConfig((prev) => ({ ...prev, calibrationConstant: value }));
+
   return (
     <AppConfigContext.Provider
       value={{
@@ -55,6 +72,10 @@ export const AppConfigProvider = ({ children }: PropsWithChildren) => {
         resetConfig,
         setModelMinConfidence,
         setSimilarityThreshold,
+
+        setCalibrating,
+        setCurrentFaceWidth,
+        setCalibrationConstant,
       }}
     >
       {children}

@@ -61,3 +61,18 @@ export async function getAllFaceEmbeddings(): Promise<FaceEmbeddingRow[]> {
     label: row?.label?.toString() ?? null,
   }));
 }
+
+/**
+ * Queries the count of face saved on the database
+ */
+export async function getFaceCount(): Promise<number> {
+  const result = await libsqlClient.execute({
+    sql: `SELECT COUNT(*) as count FROM ${TABLE_NAME}`,
+  });
+
+  if (!result || result.rows.length === 0) {
+    return 0;
+  }
+
+  return Number(result.rows[0]?.count) ?? 0;
+}

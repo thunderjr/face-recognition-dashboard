@@ -12,8 +12,10 @@ const formatDetectionData = (
   data: DetectionLog,
 ): Record<keyof Omit<DetectionLog, "id">, ReactNode> => {
   return {
-    age: data.age,
+    age: Math.floor(data.age),
+    face_label: data.face_label || "N/A",
     gender: translateGender(data.gender),
+    face_external_id: data.face_external_id,
     expression: translateExpression(data.expression),
     distance_in_meters: data.distance_in_meters.toFixed(1),
     timestamp: new Date(data.timestamp).toLocaleTimeString(),
@@ -23,12 +25,14 @@ const formatDetectionData = (
 export const FaceDetectionsTable = () => {
   const { data: logs, error } = useDetectionLogs();
 
-  const detectionsColumns = {
+  const detectionsColumns: Record<keyof Omit<DetectionLog, "id">, string> = {
     timestamp: "Horário",
     distance_in_meters: "Distância (m)",
     age: "Idade",
     gender: "Gênero",
-    expression: "Expressão detectada",
+    expression: "Expressão",
+    face_external_id: "ID do rosto",
+    face_label: "Nome",
   };
 
   if (error) {

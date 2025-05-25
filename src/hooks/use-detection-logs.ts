@@ -6,6 +6,7 @@ import {
   orderBy,
   onSnapshot,
   QueryConstraint,
+  limit,
 } from "firebase/firestore";
 
 import { collection } from "@/lib/firebase/config";
@@ -14,7 +15,10 @@ import type { DetectionLog } from "@/types";
 export const useDetectionLogs = () => {
   const subscribe: SWRSubscription<string, DetectionLog[], Error> = useCallback(
     (_, { next }) => {
-      const constraints: QueryConstraint[] = [orderBy("timestamp", "desc")];
+      const constraints: QueryConstraint[] = [
+        orderBy("timestamp", "desc"),
+        limit(50),
+      ];
 
       const unsubscribe = onSnapshot(
         query(collection, ...constraints),
@@ -25,7 +29,10 @@ export const useDetectionLogs = () => {
           })) as DetectionLog[];
 
           next(undefined, logsData);
+
+          mutate("faces");
           mutate("metrics");
+          mutate("totalFaces");
         },
         (err) => {
           next(err);

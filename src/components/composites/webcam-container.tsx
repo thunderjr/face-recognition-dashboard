@@ -47,7 +47,7 @@ export const WebcamContainer = ({ videoRef, overlayRef }: Props) => {
   }, [cameraActive]);
 
   return (
-    <div className="w-full lg:w-[40%]">
+    <div className="w-full lg:w-[30%]">
       <Card className="bg-slate-800 border-slate-700">
         <CardHeader>
           <CardTitle className="flex justify-between items-center">

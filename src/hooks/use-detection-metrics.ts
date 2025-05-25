@@ -13,7 +13,7 @@ export const useDetectionMetrics = () => {
   return useSWR("metrics", fetchDetectionMetrics);
 };
 
-export async function fetchDetectionMetrics(): Promise<Metrics> {
+async function fetchDetectionMetrics(): Promise<Metrics> {
   const currentDate = new Date();
 
   const currentMinute = currentDate.setSeconds(0, 0);

@@ -16,4 +16,7 @@ export type DetectionLog = {
   age: number;
   gender: Gender;
   expression: Expression;
+
+  face_external_id: number; // ID of the face saved in the embeddings database
+  face_label?: string; // Name of the face saved in the embeddings database
 };

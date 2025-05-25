@@ -10,7 +10,7 @@ type Props = {
 
 export const MetricsCard = ({ title, icon, value }: Props) => {
   return (
-    <Card className="bg-slate-800 border-slate-700 w-80">
+    <Card className="bg-slate-800 border-slate-700 lg:w-80">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm font-medium text-slate-400">
           {title}

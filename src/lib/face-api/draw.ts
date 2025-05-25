@@ -1,12 +1,12 @@
 import * as faceapi from "face-api.js";
 
-import type { FaceDetectionProps, RawDetectionResult } from "./types";
+import type { FaceDetectionParams, RawDetectionResult } from "./types";
 import { translateGender, translateExpression } from "../translation";
 import { findSimilarFaceEmbedding } from "@/lib/libsql";
 import { getHighestExpression } from "./expression";
 
 export async function drawDetections(
-  { overlayRef, videoRef }: FaceDetectionProps,
+  { overlayRef, videoRef, config }: FaceDetectionParams,
   result: RawDetectionResult[],
 ) {
   if (videoRef.current && overlayRef.current) {
@@ -22,7 +22,9 @@ export async function drawDetections(
     faceapi.draw.drawDetections(overlayRef.current, resizedResults);
 
     await Promise.allSettled(
-      resizedResults.map(drawDetectionLabel(overlayRef.current)),
+      resizedResults.map(
+        drawDetectionLabel(overlayRef.current, config.similarityThreshold),
+      ),
     );
   }
 }
@@ -31,10 +33,12 @@ export async function drawDetections(
  * Returns a high order function to iterate the detection results.
  * The returned function returns a Promise to use with Promise.allSettled() and draw all the detection labels at once.
  * @param {HTMLCanvasElement} canvas - The camera overlay canvas.
+ * @param {number} similarityThreshold - The threshold to consider a face similar to an existing one in the database. Comes from AppConfig.
  * @returns {(data: RawDetectionResult) => Promise<void>} High order function that will draw the detection label on the canvas
  */
 function drawDetectionLabel(
   canvas: HTMLCanvasElement,
+  similarityThreshold: number,
 ): (data: RawDetectionResult) => Promise<void> {
   return async (data: RawDetectionResult) => {
     const { expression, probability: expressionProbability } =
@@ -47,12 +51,13 @@ function drawDetectionLabel(
       `${translateExpression(expression)} (${faceapi.utils.round(expressionProbability * 100)}%)`,
     ];
 
-    const dbData = await findSimilarFaceEmbedding(data.descriptor).catch(
-      (error) => {
-        console.error("Error querying face embedding:", error);
-        return null;
-      },
-    );
+    const dbData = await findSimilarFaceEmbedding(
+      data.descriptor,
+      similarityThreshold,
+    ).catch((error) => {
+      console.error("Error querying face embedding:", error);
+      return;
+    });
 
     if (dbData) {
       texts.unshift(

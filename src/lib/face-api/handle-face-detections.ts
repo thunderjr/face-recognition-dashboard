@@ -1,21 +1,24 @@
 import * as faceapi from "face-api.js";
 
-import { drawDetections } from "./draw";
 import type {
   RawDetectionResult,
-  FaceDetectionProps,
+  FaceDetectionParams,
   RawDetectionWithTimestamp,
+  RawDetectionWithTimestampAndDistance,
 } from "./types";
 
-const options = new faceapi.SsdMobilenetv1Options({
-  minConfidence: 0.3,
-});
+import { includeDistance } from "./distance";
+import { drawDetections } from "./draw";
 
 export async function handleFaceDetections(
-  elements: FaceDetectionProps,
-): Promise<RawDetectionWithTimestamp[] | undefined> {
-  const { overlayRef, videoRef } = elements;
+  params: FaceDetectionParams,
+): Promise<RawDetectionWithTimestampAndDistance[] | undefined> {
+  const { overlayRef, videoRef } = params;
   if (videoRef.current && overlayRef.current) {
+    const options = new faceapi.SsdMobilenetv1Options({
+      minConfidence: params.config.modelMinConfidence,
+    });
+
     const result = await faceapi
       .detectAllFaces(videoRef.current, options)
       .withFaceLandmarks()
@@ -24,15 +27,22 @@ export async function handleFaceDetections(
       .withAgeAndGender();
 
     const timestamp = Date.now();
-    await drawDetections(elements, result);
+    await drawDetections(params, result);
 
-    return result.map(includeTimestamp(timestamp));
+    const resultWithTimestamp = result.map(includeTimestamp(timestamp));
+
+    return Promise.all(resultWithTimestamp.map(includeDistance));
   }
 }
 
+/**
+ * Returns a high-order function to include a timestamp in the detections.
+ * @param timestamp - The timestamp to include in the detection result.
+ * @returns A function that takes a raw detection result and returns it with the timestamp included.
+ */
 function includeTimestamp(
   timestamp: number,
-): (raw: RawDetectionResult) => RawDetectionResult & { timestamp: number } {
+): (raw: RawDetectionResult) => RawDetectionWithTimestamp {
   return (raw) => ({
     ...raw,
     timestamp,

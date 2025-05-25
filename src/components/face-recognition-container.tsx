@@ -4,10 +4,13 @@ import { useEffect, useRef } from "react";
 
 import { handleFaceDetections } from "@/lib/face-api/handle-face-detections";
 import { WebcamContainer } from "./composites/webcam-container";
-import { loadModels, saveDetectionLogs } from "@/lib/face-api";
+import { loadModels, handleSaveDetectionLogs } from "@/lib/face-api";
 import { initializeFaceEmbeddingStore } from "@/lib/libsql";
+import { useAppConfig } from "@/context/app-config-context";
 
 export const FaceRecognitionContainer = () => {
+  const { config } = useAppConfig();
+
   const overlayRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -18,12 +21,14 @@ export const FaceRecognitionContainer = () => {
   useEffect(() => {
     const intervalId = setInterval(
       () =>
-        handleFaceDetections({ videoRef, overlayRef }).then(saveDetectionLogs),
+        handleFaceDetections({ videoRef, overlayRef, config }).then(
+          handleSaveDetectionLogs(config),
+        ),
       1000,
     );
 
     return () => clearInterval(intervalId);
-  }, [videoRef, overlayRef]);
+  }, [videoRef, overlayRef, config]);
 
   return <WebcamContainer overlayRef={overlayRef} videoRef={videoRef} />;
 };

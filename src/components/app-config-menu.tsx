@@ -89,7 +89,7 @@ export const AppConfigMenu = () => {
 
           <div className="space-y-3">
             <Label className="text-sm font-medium">
-              Calibragem de Distância
+              Calibração de Distância
             </Label>
 
             {!config.calibratingDistance ? (
@@ -125,7 +125,7 @@ export const AppConfigMenu = () => {
             ) : (
               <div className="space-y-2">
                 <div className="text-xs text-green-600">
-                  Modo de calibragem ativo. Mantenha-se na posição até detectar
+                  Modo de calibração ativo. Mantenha-se na posição até detectar
                   seu rosto.
                 </div>
 
@@ -173,7 +173,7 @@ export const AppConfigMenu = () => {
 
             {config.distanceCalibrationConstant && (
               <div className="text-xs text-muted-foreground">
-                Constante de calibragem:{" "}
+                Constante de calibração:{" "}
                 {config.distanceCalibrationConstant.toFixed(2)}
               </div>
             )}

@@ -1,10 +1,6 @@
 "use server";
 
-import {
-  TABLE_NAME,
-  libsqlClient,
-  DEFAULT_SIMILARITY_THRESHOLD,
-} from "./config";
+import { TABLE_NAME, libsqlClient } from "./config";
 
 export type FaceEmbeddingRow = {
   id: number;
@@ -16,6 +12,7 @@ export type FaceEmbeddingRow = {
  */
 export async function findSimilarFaceEmbedding(
   embedding: Float32Array,
+  similarityThreshold: number,
 ): Promise<FaceEmbeddingRow | undefined> {
   const embeddingArray = Array.from(embedding);
   const queryVector = `[${embeddingArray.join(",")}]`;
@@ -29,7 +26,7 @@ export async function findSimilarFaceEmbedding(
       FROM ${TABLE_NAME}
       WHERE distance <= ?
       ORDER BY distance ASC LIMIT 1`,
-    args: [queryVector, DEFAULT_SIMILARITY_THRESHOLD],
+    args: [queryVector, similarityThreshold],
   });
 
   if (!result || result.rows.length === 0) {

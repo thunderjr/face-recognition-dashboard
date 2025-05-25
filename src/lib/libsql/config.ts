@@ -1,8 +1,5 @@
 import { createClient } from "@libsql/client";
 
-// Based on actual data: same person ~0.03, different people ~0.18+
-export const DEFAULT_SIMILARITY_THRESHOLD = 0.11;
-
 export const TABLE_NAME = "face_embeddings";
 
 if (!process.env.TURSO_DATABASE_URL) {

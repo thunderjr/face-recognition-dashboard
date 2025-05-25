@@ -9,7 +9,7 @@ export default function Home() {
 
       <MetricsRow />
 
-      <div className="flex flex-col lg:flex-row gap-6 flex-1">
+      <div className="flex flex-col-reverse lg:flex-row gap-6 flex-1">
         <FaceDetectionsTable />
         <FaceRecognitionContainer />
       </div>

@@ -10,15 +10,18 @@ import {
   TableHeader,
 } from "../ui/table";
 import { Skeleton } from "../ui/skeleton";
+import { cn } from "@/lib/utils";
 
 type Props<T extends Record<string, ReactNode>> = {
   columns: Record<keyof T, string>;
   isLoading?: boolean;
+  className?: string;
   title: string;
   data: T[];
 };
 
 export const DataTable = <T extends Record<string, ReactNode>>({
+  className,
   isLoading,
   columns,
   title,
@@ -49,13 +52,13 @@ export const DataTable = <T extends Record<string, ReactNode>>({
   }, [columns, data, isLoading, title]);
 
   return (
-    <div className="flex-1">
+    <div className={cn(className, "flex-1")}>
       <Card className="bg-slate-800 border-slate-700 max-h-full">
         <CardHeader>
           <CardTitle>{title}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-auto max-h-full">
+          <div className="overflow-auto max-h-screen">
             <Table>
               <TableHeader>
                 <TableRow className="border-slate-700">

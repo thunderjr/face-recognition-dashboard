@@ -7,7 +7,7 @@ type Props = {
   onSubmit: (name: string) => Promise<void>;
 };
 
-export const EditInput = ({ value, onSubmit }: Props) => {
+export const EditableField = ({ value, onSubmit }: Props) => {
   const [inputValue, setInputValue] = useState(value);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,15 +32,15 @@ export const EditInput = ({ value, onSubmit }: Props) => {
   }, [inputValue, onSubmit]);
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1">
       {isEditing ? (
         <>
           <Input
             type="text"
             value={inputValue}
             disabled={isLoading}
-            onChange={(e) => setInputValue(e.target.value)}
             className="max-h-fit p-2 -my-2"
+            onChange={(e) => setInputValue(e.target.value)}
           />
 
           <CircleCheck
@@ -60,8 +60,8 @@ export const EditInput = ({ value, onSubmit }: Props) => {
           <span>{value}</span>
           <SquarePen
             size={15}
-            className="cursor-pointer"
             onClick={() => setIsEditing(true)}
+            className="cursor-pointer opacity-50 ml-1"
           />
         </>
       )}

@@ -4,7 +4,7 @@ import useSWR, { mutate } from "swr";
 
 import { getAllFaceEmbeddings, updateFaceLabel } from "@/lib/libsql";
 import { DataTable } from "./composites/data-table";
-import { EditInput } from "./edit-input";
+import { EditableField } from "./editable-field";
 
 export const UniqueFacesTable = () => {
   const { data: faceResults } = useSWR("faces", getAllFaceEmbeddings);
@@ -17,7 +17,7 @@ export const UniqueFacesTable = () => {
   const tableRows = faceResults?.map((face) => ({
     id: face.id,
     label: (
-      <EditInput
+      <EditableField
         value={face.label ?? "N/A"}
         onSubmit={(newLabel) => handleLabelChange(face.id, newLabel)}
       />

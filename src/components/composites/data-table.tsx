@@ -53,12 +53,13 @@ export const DataTable = <T extends Record<string, ReactNode>>({
 
   return (
     <div className={cn(className, "flex-1")}>
-      <Card className="bg-slate-800 border-slate-700 max-h-full">
+      <Card className="bg-slate-800 border-slate-700">
         <CardHeader>
           <CardTitle>{title}</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="overflow-auto max-h-screen">
+
+        <CardContent className="p-0 px-2 pb-4">
+          <div className="overflow-auto h-[calc(100vh/2)] lg:h-[calc(100vh-22rem)]">
             <Table>
               <TableHeader>
                 <TableRow className="border-slate-700">

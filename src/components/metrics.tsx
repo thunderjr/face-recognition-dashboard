@@ -29,7 +29,7 @@ export const MetricsRow = () => {
   }
 
   return (
-    <div className="flex flex-row gap-4">
+    <div className="flex flex-col lg:flex-row gap-2 lg:gap-4">
       <MetricsCard
         title="Detecções"
         value={isLoading ? skeleton : metrics?.totalFaces}

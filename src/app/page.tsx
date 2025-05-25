@@ -1,6 +1,7 @@
 import { FaceRecognitionContainer } from "@/components/face-recognition-container";
 import { FaceDetectionsTable } from "@/components/detections-table";
 import { UniqueFacesTable } from "@/components/unique-faces-table";
+import { AppConfigMenu } from "@/components/app-config-menu";
 import { MetricsRow } from "@/components/metrics";
 
 export default function Home() {
@@ -14,6 +15,8 @@ export default function Home() {
 
         <FaceRecognitionContainer />
       </div>
+
+      <AppConfigMenu />
     </div>
   );
 }

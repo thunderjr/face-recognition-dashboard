@@ -32,8 +32,8 @@ export const AppConfigMenu = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="fixed bottom-4 right-4" asChild>
-        <Button className="rounded-full" variant="outline" asChild>
+      <DropdownMenuTrigger className="fixed bottom-3 right-3" asChild>
+        <Button className="rounded-full" asChild>
           <Settings className="w-14 h-14" />
         </Button>
       </DropdownMenuTrigger>
@@ -49,7 +49,7 @@ export const AppConfigMenu = () => {
                 htmlFor="confidence-slider"
                 className="text-sm font-medium"
               >
-                Confiança para detecção de faces
+                Qualidade minima para detecção
               </Label>
               <span className="text-sm text-muted-foreground">
                 {config.modelMinConfidence.toFixed(2)}

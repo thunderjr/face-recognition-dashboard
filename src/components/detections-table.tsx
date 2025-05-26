@@ -13,7 +13,7 @@ const formatDetectionData = (
 ): Record<keyof Omit<DetectionLog, "id">, ReactNode> => {
   return {
     age: Math.floor(data.age),
-    face_label: data.face_label || "N/A",
+    face_label: data.face_label || "Desconhecido",
     gender: translateGender(data.gender),
     face_external_id: data.face_external_id,
     expression: translateExpression(data.expression),

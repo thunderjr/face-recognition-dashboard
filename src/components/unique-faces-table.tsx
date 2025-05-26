@@ -18,7 +18,7 @@ export const UniqueFacesTable = () => {
     id: face.id,
     label: (
       <EditableField
-        value={face.label ?? "N/A"}
+        value={face.label ?? "Desconhecido"}
         onSubmit={(newLabel) => handleLabelChange(face.id, newLabel)}
       />
     ),

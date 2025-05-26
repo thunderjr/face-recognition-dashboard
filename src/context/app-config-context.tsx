@@ -17,6 +17,7 @@ const DEFAULT_CONFIG: AppConfig = {
   currentFaceWidth: null,
   calibratingDistance: false,
   distanceCalibrationConstant: 65,
+  repeatedFaceLogIntervalSeconds: 0,
 };
 
 const LOCAL_STORAGE_KEY = "face-recognition-app-config";
@@ -30,6 +31,7 @@ interface AppConfigContextType {
   setCalibratingDistance: (value: boolean) => void;
   setCurrentFaceWidth: (value: number | null) => void;
   setDistanceCalibrationConstant: (value: number) => void;
+  setRepeatedFaceLogIntervalSeconds: (value: number) => void;
 }
 
 const AppConfigContext = createContext<AppConfigContextType | undefined>(
@@ -65,6 +67,9 @@ export const AppConfigProvider = ({ children }: PropsWithChildren) => {
   const setCalibratingDistance = (value: boolean) =>
     setConfig((prev) => ({ ...prev, calibratingDistance: value }));
 
+  const setRepeatedFaceLogIntervalSeconds = (value: number) =>
+    setConfig((prev) => ({ ...prev, repeatedFaceLogIntervalSeconds: value }));
+
   return (
     <AppConfigContext.Provider
       value={{
@@ -76,6 +81,7 @@ export const AppConfigProvider = ({ children }: PropsWithChildren) => {
         setCurrentFaceWidth,
         setCalibratingDistance,
         setDistanceCalibrationConstant,
+        setRepeatedFaceLogIntervalSeconds,
       }}
     >
       {children}

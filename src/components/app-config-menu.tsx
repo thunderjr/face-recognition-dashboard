@@ -21,10 +21,11 @@ export const AppConfigMenu = () => {
   const {
     config,
     resetConfig,
-    setCalibratingDistance,
     setModelMinConfidence,
+    setCalibratingDistance,
     setSimilarityThreshold,
     setDistanceCalibrationConstant,
+    setRepeatedFaceLogIntervalSeconds,
   } = useAppConfig();
 
   const [knownDistance, setKnownDistance] = useState<number>(0);
@@ -41,7 +42,7 @@ export const AppConfigMenu = () => {
 
         <DropdownMenuSeparator />
 
-        <div className="px-4 py-6 space-y-4">
+        <div className="p-4 space-y-5">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <Label
@@ -84,6 +85,38 @@ export const AppConfigMenu = () => {
               className="w-full"
               value={[config.similarityThreshold]}
               onValueChange={(value) => setSimilarityThreshold(value[0])}
+            />
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="interval-slider" className="text-sm font-medium">
+                Intervalo para salvar face repetida
+              </Label>
+
+              <span className="text-sm text-muted-foreground">
+                {config.repeatedFaceLogIntervalSeconds === 0
+                  ? "Desativado"
+                  : `${config.repeatedFaceLogIntervalSeconds}s`}
+              </span>
+            </div>
+
+            <div className="text-xs text-muted-foreground mb-2">
+              {config.repeatedFaceLogIntervalSeconds === 0
+                ? "Faces repetidas não serão salvas"
+                : "Intervalo mínimo entre logs da mesma face"}
+            </div>
+
+            <Slider
+              id="interval-slider"
+              min={0}
+              max={300}
+              step={5}
+              className="w-full"
+              value={[config.repeatedFaceLogIntervalSeconds]}
+              onValueChange={(value) =>
+                setRepeatedFaceLogIntervalSeconds(value[0])
+              }
             />
           </div>
 

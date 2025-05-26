@@ -4,7 +4,7 @@ import { TABLE_NAME, libsqlClient } from "./config";
 
 export type FaceEmbeddingRow = {
   id: number;
-  label: string | null;
+  label?: string | null;
 };
 
 /**

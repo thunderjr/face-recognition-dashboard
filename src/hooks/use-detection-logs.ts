@@ -6,18 +6,22 @@ import {
   orderBy,
   onSnapshot,
   QueryConstraint,
-  limit,
+  limit as limitConstraint,
 } from "firebase/firestore";
 
 import { collection } from "@/lib/firebase/config";
 import type { DetectionLog } from "@/types";
 
-export const useDetectionLogs = () => {
+type Props = {
+  limit: number;
+};
+
+export const useDetectionLogs = ({ limit = 50 }: Props) => {
   const subscribe: SWRSubscription<string, DetectionLog[], Error> = useCallback(
     (_, { next }) => {
       const constraints: QueryConstraint[] = [
         orderBy("timestamp", "desc"),
-        limit(50),
+        limitConstraint(limit),
       ];
 
       const unsubscribe = onSnapshot(

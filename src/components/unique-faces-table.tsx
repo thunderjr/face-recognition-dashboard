@@ -27,10 +27,10 @@ export const UniqueFacesTable = () => {
   return (
     <DataTable
       data={tableRows || []}
-      className="lg:max-w-96"
       title="Rostos detectados"
       columns={{ id: "ID", label: "Nome" }}
       isLoading={!faceResults || faceResults?.length === 0}
+      className="w-full max-w-sm lg:max-h-[calc(100vh/1.5)]"
     />
   );
 };

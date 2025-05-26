@@ -17,13 +17,13 @@ const formatDetectionData = (
     gender: translateGender(data.gender),
     face_external_id: data.face_external_id,
     expression: translateExpression(data.expression),
-    distance_in_meters: data.distance_in_meters.toFixed(1),
+    distance_in_meters: data.distance_in_meters?.toFixed(1),
     timestamp: new Date(data.timestamp).toLocaleTimeString(),
   };
 };
 
 export const FaceDetectionsTable = () => {
-  const { data: logs, error } = useDetectionLogs();
+  const { data: logs, error } = useDetectionLogs({ limit: 25 });
 
   const detectionsColumns: Record<keyof Omit<DetectionLog, "id">, string> = {
     timestamp: "Horário",
@@ -38,7 +38,7 @@ export const FaceDetectionsTable = () => {
   if (error) {
     return (
       <div className="flex-1">
-        <Card className="bg-slate-800 border-slate-700 max-h-full p-12 grid place-items-center">
+        <Card className="bg-gray-200 max-h-full p-12 grid place-items-center">
           <div>Erro ao carregar detecções:</div>
           <pre>{error}</pre>
         </Card>

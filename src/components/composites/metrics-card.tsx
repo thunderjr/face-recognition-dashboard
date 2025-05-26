@@ -8,13 +8,11 @@ type Props = {
   icon: ReactNode;
 };
 
-export const MetricsCard = ({ title, icon, value }: Props) => {
+export const MetricCard = ({ title, icon, value }: Props) => {
   return (
-    <Card className="bg-slate-800 border-slate-700 lg:w-80">
+    <Card className="lg:w-full">
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium text-slate-400">
-          {title}
-        </CardTitle>
+        <CardTitle className="text-sm font-medium">{title}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex items-center">

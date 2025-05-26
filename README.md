@@ -42,9 +42,12 @@ pnpm install
 1. Crie um projeto no [Firebase Console](https://console.firebase.google.com)
 2. Atualize as credenciais no arquivo `.env`
 
-### 4. Configure o Turso (opcional - somente para hospedagem do banco de dados SQLite)
+### 4. Configuração Turso
+##### (opcional - hospedagem do banco de dados SQLite)
 1. Crie um banco de dados na plataforma [Turso](https://turso.tech)
 2. Adicione a URL e credenciais no arquivo `.env`
+
+##### (Utilize `file:[DB_NAME].db` para desenvolvimento local)
 
 ## ⚙️ Configuração
 

@@ -1,13 +1,13 @@
 import "./globals.css";
 
-import { Inter } from "next/font/google";
+import { Open_Sans as Font } from "next/font/google";
 import type { Metadata } from "next";
 import type React from "react";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { AppConfigProvider } from "@/context/app-config-context";
 
-const inter = Inter({ subsets: ["latin"] });
+const font = Font({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Dashboard de Reconhecimento Facial",
@@ -22,13 +22,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider
-          enableSystem
-          attribute="class"
-          defaultTheme="dark"
-          disableTransitionOnChange
-        >
+      <body className={font.className}>
+        <ThemeProvider disableTransitionOnChange>
           <AppConfigProvider>{children}</AppConfigProvider>
         </ThemeProvider>
       </body>

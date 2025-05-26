@@ -47,22 +47,19 @@ export const WebcamContainer = ({ videoRef, overlayRef }: Props) => {
   }, [cameraActive]);
 
   return (
-    <div className="w-full lg:w-[30%]">
-      <Card className="bg-slate-800 border-slate-700">
-        <CardHeader className="p-4 pb-0">
-          <CardTitle className="flex justify-between items-center">
-            <span>Câmera</span>
-            <Button
-              variant={cameraActive ? "destructive" : "default"}
-              onClick={() => setCameraActive(!cameraActive)}
-              size="sm"
-            >
-              {cameraActive ? "Desativar" : "Ativar"}
-            </Button>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-3">
-          <div className="aspect-video bg-slate-700 rounded-lg flex items-center justify-center overflow-hidden">
+    <div className="w-full max-w-4xl">
+      <Card>
+        <CardContent className="py-4 px-1 relative">
+          <Button
+            size="sm"
+            className="absolute right-2 top-2 z-10"
+            onClick={() => setCameraActive(!cameraActive)}
+            variant={cameraActive ? "destructive" : "default"}
+          >
+            {cameraActive ? "Desativar" : "Ativar câmera"}
+          </Button>
+
+          <div className="aspect-video bg-white rounded-lg flex items-center justify-center overflow-hidden">
             {cameraActive ? (
               <div className="relative">
                 <video
@@ -78,7 +75,7 @@ export const WebcamContainer = ({ videoRef, overlayRef }: Props) => {
                 />
               </div>
             ) : (
-              <CameraIcon className="h-12 w-12 text-slate-500" />
+              <CameraIcon className="h-12 w-12 text-gray-500" />
             )}
           </div>
         </CardContent>

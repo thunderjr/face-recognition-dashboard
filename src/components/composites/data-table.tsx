@@ -10,7 +10,6 @@ import {
   TableHeader,
 } from "../ui/table";
 import { Skeleton } from "../ui/skeleton";
-import { cn } from "@/lib/utils";
 
 type Props<T extends Record<string, ReactNode>> = {
   columns: Record<keyof T, string>;
@@ -30,10 +29,13 @@ export const DataTable = <T extends Record<string, ReactNode>>({
   const content = useMemo(() => {
     if (isLoading) {
       return Array.from({ length: 3 }).map((_, index) => (
-        <TableRow key={`row-${title}-${index}`} className="border-slate-700">
+        <TableRow
+          key={`row-${title}-${index}`}
+          className="border-gray-200 hover:bg-red-50"
+        >
           {Object.entries<string>(columns).map(([key]) => (
             <TableCell key={`cell-${title}-${key}-${index}`}>
-              <Skeleton className="h-4 w-24 bg-white/5" />
+              <Skeleton className="h-4 w-24 bg-gray-200" />
             </TableCell>
           ))}
         </TableRow>
@@ -41,7 +43,10 @@ export const DataTable = <T extends Record<string, ReactNode>>({
     }
 
     return data.map((row, index) => (
-      <TableRow key={`row-${title}-${index}`} className="border-slate-700">
+      <TableRow
+        key={`row-${title}-${index}`}
+        className="border-gray-200 hover:bg-red-50"
+      >
         {Object.entries<string>(columns).map(([key]) => (
           <TableCell key={`cell-${title}-${index}-${key}`}>
             {row[key as keyof T]}
@@ -52,30 +57,24 @@ export const DataTable = <T extends Record<string, ReactNode>>({
   }, [columns, data, isLoading, title]);
 
   return (
-    <div className={cn(className, "flex-1")}>
-      <Card className="bg-slate-800 border-slate-700">
-        <CardHeader>
-          <CardTitle>{title}</CardTitle>
-        </CardHeader>
+    <Card className={className}>
+      <CardHeader className="h-16">
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
 
-        <CardContent className="p-0 px-2 pb-4">
-          <div className="overflow-auto h-[calc(100vh/2)] lg:h-[calc(100vh-22rem)]">
-            <Table>
-              <TableHeader>
-                <TableRow className="border-slate-700">
-                  {Object.entries<string>(columns).map(([key, value]) => (
-                    <TableHead key={key} className="text-slate-400">
-                      {value}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
+      <CardContent className="p-0 px-2 pb-4 overflow-auto max-h-[calc(100%-5rem)]">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {Object.entries<string>(columns).map(([key, value]) => (
+                <TableHead key={key}>{value}</TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
 
-              <TableBody>{content}</TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+          <TableBody>{content}</TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 };

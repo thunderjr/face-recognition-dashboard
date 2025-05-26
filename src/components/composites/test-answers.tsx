@@ -66,8 +66,8 @@ export const TextAnswersComponent = () => {
 
             <ol className="list-decimal pl-6 my-2">
               <li>
-                Primeiro, o sistema se a face detectada é nova ou já conhecida.
-                Se for uma face nova, registramos imediatamente.
+                Primeiro, o sistema valida se a face detectada é nova ou já
+                conhecida. Se for uma face nova, registramos imediatamente.
               </li>
               <li>
                 Em seguida, se a face já é conhecida, checamos se passou tempo

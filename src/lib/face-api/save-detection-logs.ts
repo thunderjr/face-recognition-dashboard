@@ -37,8 +37,8 @@ export function handleSaveDetectionLogs({
           age: raw.age,
           gender: raw.gender,
           timestamp: raw.timestamp,
-          face_label: foundFace.label,
           face_external_id: foundFace.id,
+          face_label: foundFace.label || "",
           distance_in_meters: raw.distance_in_meters,
         } as DetectionLog;
       }),

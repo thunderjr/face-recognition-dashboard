@@ -3,6 +3,7 @@ import { TextAnswersComponent } from "@/components/composites/test-answers";
 import { FaceDetectionsTable } from "@/components/detections-table";
 import { UniqueFacesTable } from "@/components/unique-faces-table";
 import { AppConfigMenu } from "@/components/app-config-menu";
+import { Separator } from "@/components/ui/separator";
 import { Metrics } from "@/components/metrics";
 
 export default function Home() {
@@ -15,7 +16,7 @@ export default function Home() {
 
       <TextAnswersComponent />
 
-      <div className="border-b border-b-gray-300 mt-2" />
+      <Separator className="my-4" />
 
       <Metrics />
       <FaceDetectionsTable />

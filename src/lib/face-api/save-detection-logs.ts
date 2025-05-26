@@ -22,13 +22,13 @@ export function handleSaveDetectionLogs({
 
     const logs = await Promise.all(
       result.map(async (raw) => {
-        const { shouldLog, foundFace } = await shouldSaveDetection(
+        const { shouldSave, foundFace } = await shouldSaveDetection(
           raw,
           similarityThreshold,
           repeatedFaceLogIntervalSeconds,
         );
 
-        if (!shouldLog) return;
+        if (!shouldSave) return;
 
         const { expression } = getHighestExpression(raw.expressions);
 
@@ -64,7 +64,10 @@ export const validateRepeatedDetection = (
   intervalMs: number,
 ): boolean => {
   const lastLoggedTime = faceLastSeenMap.get(faceId);
-  if (!lastLoggedTime) return true;
+  if (!lastLoggedTime) {
+    faceLastSeenMap.set(faceId, currentTimestamp);
+    return true;
+  }
 
   const shouldSave = currentTimestamp - lastLoggedTime >= intervalMs;
 
@@ -83,30 +86,30 @@ async function shouldSaveDetection(
   similarityThreshold: number,
   repeatedFaceLogIntervalSeconds: number,
 ): Promise<{
-  shouldLog: boolean;
+  shouldSave: boolean;
   foundFace: FaceEmbeddingRow;
 }> {
-  const foundSimilarFace = await findSimilarFaceEmbedding(
+  const foundFace = await findSimilarFaceEmbedding(
     raw.descriptor,
     similarityThreshold,
   );
 
-  if (!foundSimilarFace) {
+  if (!foundFace) {
     const faceId = await saveFaceEmbedding(raw.descriptor);
     return {
-      shouldLog: true,
+      shouldSave: true,
       foundFace: { id: faceId },
     };
   }
 
   if (repeatedFaceLogIntervalSeconds === 0)
-    return { shouldLog: false, foundFace: foundSimilarFace };
+    return { shouldSave: false, foundFace: foundFace };
 
   const shouldSave = validateRepeatedDetection(
-    foundSimilarFace.id,
+    foundFace.id,
     raw.timestamp,
     repeatedFaceLogIntervalSeconds * 1000,
   );
 
-  return { shouldLog: shouldSave, foundFace: foundSimilarFace };
+  return { shouldSave, foundFace };
 }

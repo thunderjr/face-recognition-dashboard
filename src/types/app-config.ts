@@ -5,4 +5,5 @@ export interface AppConfig {
   calibratingDistance: boolean;
   currentFaceWidth: number | null;
   distanceCalibrationConstant: number;
+  repeatedFaceLogIntervalSeconds: number;
 }
